@@ -1,5 +1,6 @@
 package com.cnv.service;
 
+import com.cnv.dto.ReporterArgument;
 import com.cnv.util.Constant;
 import org.fest.reflect.core.Reflection;
 import org.joda.time.DateTime;
@@ -7,22 +8,22 @@ import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
+import java.io.File;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ITunesService.class})
 @SpringBootTest
-public class ITunesServiceTest {
+public class ITunesServiceTest extends ServiceBaseTest {
 
-    @Autowired
+    @InjectMocks
     ITunesService iTunesService;
-
-    @Test
-    public void test() {
-        DateTime queryDate = new DateTime(2016, 1, 15, 0, 0, 0, DateTimeZone.UTC);
-        System.out.println(iTunesService.getReportFile(queryDate, Constant.DateType.Monthly));
-    }
 
     @Test
     public void testGetAppleStoreIdSuccess() {
@@ -44,5 +45,29 @@ public class ITunesServiceTest {
                 .in(iTunesService)
                 .invoke(iTunesAppUrl);
         Assert.assertNull(actual);
+    }
+
+    @Test
+    public void testHandleReportFileDownloadFromITunes() throws Exception {
+        String fileName = "S_M_123456789_201601.txt.gz";
+        String appleStoreId = "284882215";
+        DateTime queryDate = new DateTime(2016, 1, 15, 0, 0, 0, DateTimeZone.UTC);
+        ReporterArgument reporterArgument = Reflection.method("buildReporterArgument")
+                .withReturnType(ReporterArgument.class)
+                .withParameterTypes(DateTime.class, Constant.DateType.class)
+                .in(iTunesService)
+                .invoke(queryDate, Constant.DateType.Monthly);
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        File fileMock = new File(classLoader.getResource("itunes/S_M_123456789_201601.txt.gz").getFile());
+        PowerMockito.whenNew(File.class).withParameterTypes(String.class).withArguments(Mockito.anyString()).thenReturn(fileMock);
+        PowerMockito.stub(PowerMockito.method(File.class, "delete")).toReturn(true);
+
+        int actual = Reflection.method("handleReportFileDownloadFromITunes")
+                .withReturnType(int.class)
+                .withParameterTypes(String.class, ReporterArgument.class, String.class)
+                .in(iTunesService)
+                .invoke(fileName, reporterArgument, appleStoreId);
+        Assert.assertEquals(3, actual);
     }
 }

@@ -11,7 +11,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,7 +25,6 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 @Service
-@PropertySource("classpath:local.properties")
 public class ITunesService {
 
     public static final Logger logger = LoggerFactory.getLogger(ITunesService.class);

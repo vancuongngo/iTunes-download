@@ -14,6 +14,7 @@ It's also include some useful methods like:
     . Read output in console log
     . Parse string XML to Document.
     . How to test private method using Reflection
+    . Mocking use PowerMock
 
 ## Installation
 
