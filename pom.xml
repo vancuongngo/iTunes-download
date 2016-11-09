@@ -66,9 +66,22 @@
 			<version>1.6.5</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>Reporter</groupId>
+			<artifactId>Reporter</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/itunes/Reporter.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<build>
+		<testResources>
+			<testResource>
+				<directory>${project.basedir}/src/test/java/resources</directory>
+			</testResource>
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
