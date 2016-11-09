@@ -5,6 +5,8 @@ Get app download from iTunes via Reporter Tool.
 ## Code Example
 
 Take a look on tests, I've already written enough test cases, you can know how to use this project via them.
+Mark resource in test package as 'Test Resource' to make sure unit test can read file from test resource package
+command line: mvn clean package
 
 ## Motivation
 
